@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Result</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'fileupload/css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <img src="{% static 'fileupload/images/logo.png' %}" alt="Logo" class="logo">
+            <nav>
+                <ul>
+                    <li><a href="{% url 'file_upload' %}">Home</a></li>
+                    <li><a href="{% url 'hash_search' %}">Search Hash</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        <div class="container">
+            <h1>Search Result</h1>
+            {% if results %}
+                <ul>
+                    {% for result in results %}
+                        <li>
+                            <p>Hash: {{ result.hash }}</p>
+                            <h2>VirusTotal Result:</h2>
+                            {% if result.virustotal_status.error %}
+                                <p>{{ result.virustotal_status.error }}</p>
+                            {% else %}
+                                <div class="virustotal-result">
+                                    <p>ID: {{ result.virustotal_status.id }}</p>
+                                    <p>Type: {{ result.virustotal_status.type }}</p>
+                                    <h3>Attributes:</h3>
+                                    <pre>{{ result.virustotal_status.attributes|json_script:"attributes" }}</pre>
+                                </div>
+                            {% endif %}
+                            <h2>Any.run Result:</h2>
+                            {% if result.anyrun_status.error %}
+                                <p>{{ result.anyrun_status.error }}</p>
+                            {% else %}
+                                <pre>{{ result.anyrun_status|json_script:"anyrun_result" }}</pre>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No results found for the given hash.</p>
+            {% endif %}
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 Your Company. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

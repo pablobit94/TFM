@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Hash</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'fileupload/css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <img src="{% static 'fileupload/images/logo.png' %}" alt="Logo" class="logo">
+            <nav>
+                <ul class="menu">
+                    <li><a href="{% url 'file_upload' %}">Inicio</a></li>
+                    <li><a href="{% url 'hash_search' %}">Buscar Hash</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        <div class="container">
+            <h1>Buscar Hash</h1>
+            <form method="post" class="search-form">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="hash">Hash:</label>
+                    <input type="text" id="hash" name="hash" required>
+                </div>
+                <button type="submit" class="btn">Buscar</button>
+            </form>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 Hashware. Pablo Rodríguez García. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

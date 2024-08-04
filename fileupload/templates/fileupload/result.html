@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Subida</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'fileupload/css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <img src="{% static 'fileupload/images/logo.png' %}" alt="Logo" class="logo">
+            <nav>
+                <ul class="menu">
+                    <li><a href="{% url 'file_upload' %}">Inicio</a></li>
+                    <li><a href="{% url 'hash_search' %}">Buscar Hash</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content container">
+        <div class="result">
+            <h2>Resultados de Subida</h2>
+            {% for result in results %}
+                <h3>Hash del Archivo: {{ result.hash }}</h3>
+                
+                <div class="virustotal-result">
+                    <h4>Resultado de VirusTotal:</h4>
+                    <table class="table-results">
+                        <thead>
+                            <tr>
+                                <th>Motor</th>
+                                <th>Resultado</th>
+                                <th>Categoría</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for engine, details in result.virustotal_result.items %}
+                                <tr>
+                                    <td>{{ engine }}</td>
+                                    <td class="result-cell">{{ details.result }}</td>
+                                    <td>{{ details.category }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="hybrid-analysis-result">
+                    <h4>Resultado de Hybrid Analysis:</h4>
+                    {% if result.hybrid_analysis_result.error %}
+                        <p>{{ result.hybrid_analysis_result.error }}</p>
+                    {% else %}
+                        <pre>{{ result.hybrid_analysis_result | safe }}</pre>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 Hashware. Pablo Rodríguez García. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <script src="{% static 'fileupload/js/script.js' %}"></script>
+</body>
+</html>
