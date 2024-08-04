@@ -2,4 +2,5 @@ venv/
 db.sqlite3
 *.pyc
 __pycache__/
-
+fileupload/__pycache__
+tfm/__pycache__

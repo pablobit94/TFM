@@ -48,11 +48,30 @@
                 </div>
 
                 <div class="hybrid-analysis-result">
-                    <h4>Resultado de Hybrid Analysis:</h4>
+                    <h4>Hybrid Analysis Result:</h4>
                     {% if result.hybrid_analysis_result.error %}
                         <p>{{ result.hybrid_analysis_result.error }}</p>
                     {% else %}
-                        <pre>{{ result.hybrid_analysis_result | safe }}</pre>
+                        <p><strong>SHA256:</strong> {{ result.hybrid_analysis_result.sha256 }}</p>
+                        <p><strong>File Name:</strong> {{ result.hybrid_analysis_result.submit_name }}</p>
+                        <p><strong>Verdict:</strong> {{ result.hybrid_analysis_result.verdict }}</p>
+                        <p><strong>Threat Level:</strong> {{ result.hybrid_analysis_result.threat_level }}</p>
+                        <p><strong>VX Family:</strong> {{ result.hybrid_analysis_result.vx_family }}</p>
+                        <p><strong>AV Detect:</strong> {{ result.hybrid_analysis_result.av_detect }}</p>
+            
+                        <h5>Malicious Indicators:</h5>
+                        <ul>
+                            {% for indicator in result.hybrid_analysis_result.malicious_indicators %}
+                                <li>{{ indicator.tactic }} - {{ indicator.technique }} ({{ indicator.attck_id }})</li>
+                            {% endfor %}
+                        </ul>
+            
+                        <h5>Suspicious Indicators:</h5>
+                        <ul>
+                            {% for indicator in result.hybrid_analysis_result.suspicious_indicators %}
+                                <li>{{ indicator.tactic }} - {{ indicator.technique }} ({{ indicator.attck_id }})</li>
+                            {% endfor %}
+                        </ul>
                     {% endif %}
                 </div>
             {% endfor %}
