@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
     padding: 20px;
     display: flex;
@@ -28,23 +28,27 @@ body {
 }
 
 .header img {
-    width: 200px;
+    width: 300px;
 }
 
 .menu {
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 10px;
 }
 
 .menu li {
     display: inline;
 }
 
+button.btn-upload {
+    margin-bottom: 100%;
+}
+
 .menu li a {
     color: #ffffff;
     text-decoration: none;
-    padding: 10px 20px;
+    padding: 10px 15px;
     background-color: #333355;
     border-radius: 5px;
 }
@@ -63,8 +67,7 @@ body {
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    text-align: justify;
-    width: 60%;
+    width: 30%;
 }
 
 .upload-section {
@@ -108,6 +111,7 @@ input[type="file"] {
     border: 1px solid #444466;
     padding: 8px;
     text-align: left;
+    word-wrap: break-word;
 }
 
 .table-results th {
@@ -170,4 +174,41 @@ input[type="file"] {
     background-color: #111122;
     padding: 20px;
     margin-top: auto;
+}
+
+@media (max-width: 768px) {
+    .header img {
+        width: 120px;
+    }
+
+    .menu {
+        display: inline;
+    }
+
+    .menu li {
+        margin-bottom: 10px;
+    }
+
+    .description {
+        width: 100%;
+    }
+
+    .input-group, .btn {
+        width: 100%;
+    }
+
+    .result {
+        font-size: 0.5em;
+    }
+
+    .footer, .main-content, .header {
+        width: 91%;
+    }
+}
+
+
+@media (max-width: 1024px) {
+    .footer, .main-content, .header {
+        width: 95%;
+    }
 }
