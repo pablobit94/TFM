@@ -28,30 +28,36 @@
                 
                 <div class="virustotal-result">
                     <h4>Resultado de VirusTotal:</h4>
-                    <table class="table-results">
-                        <thead>
-                            <tr>
-                                <th>Motor</th>
-                                <th>Resultado</th>
-                                <th>Categoría</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for engine, details in result.virustotal_result.items %}
+                    {% if result.virustotal_result.error %}
+                        <p>{{ result.virustotal_result.error }}</p>
+                        <p>Para respetar la privacidad y anonimato, se recomienda que si es un archivo sensible a datos o si no se quiere alertar al hacker, se analice dicho archivo en un antivirus local que no suba o comparta información del hash o el reporte y resultados a una base de datos en la nube.</p>
+                    {% else %}
+                        <table class="table-results">
+                            <thead>
                                 <tr>
-                                    <td>{{ engine }}</td>
-                                    <td class="result-cell">{{ details.result }}</td>
-                                    <td>{{ details.category }}</td>
+                                    <th>Motor</th>
+                                    <th>Resultado</th>
+                                    <th>Categoría</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for engine, details in result.virustotal_result.items %}
+                                    <tr>
+                                        <td>{{ engine }}</td>
+                                        <td class="result-cell">{{ details.result }}</td>
+                                        <td>{{ details.category }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
                 </div>
 
                 <div class="hybrid-analysis-result">
                     <h4>Hybrid Analysis Result:</h4>
                     {% if result.hybrid_analysis_result.error %}
                         <p>{{ result.hybrid_analysis_result.error }}</p>
+                        <p>Para respetar la privacidad y anonimato, se recomienda que si es un archivo sensible a datos o si no se quiere alertar al hacker, se analice dicho archivo en un antivirus local que no suba o comparta información del hash o el reporte y resultados a una base de datos en la nube.</p>
                     {% else %}
                         <p><strong>SHA256:</strong> {{ result.hybrid_analysis_result.sha256 }}</p>
                         <p><strong>File Name:</strong> {{ result.hybrid_analysis_result.submit_name }}</p>

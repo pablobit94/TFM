@@ -56,18 +56,17 @@ def check_virustotal(hash):
     }
     try:
         response = requests.get(url, headers=headers)
+        if response.status_code == 404:
+            return {"error": "No encontrado en VirusTotal"}
         response.raise_for_status()
         result = response.json()
-        data = {
-            'id': result.get('data', {}).get('id'),
-            'type': result.get('data', {}).get('type'),
-            'attributes': result.get('data', {}).get('attributes', {})
-        }
-        analysis_results = data['attributes'].get('last_analysis_results', {})
-        return analysis_results
+        if 'data' not in result or 'attributes' not in result['data']:
+            return {"error": "No encontrado en VirusTotal"}
+        analysis_results = result['data']['attributes'].get('last_analysis_results', {})
+        return analysis_results if analysis_results else {"error": "No encontrado en VirusTotal"}
     except requests.exceptions.RequestException as e:
-        return {"error": f"Error checking VirusTotal: {e}"}
-
+        return {"error": f"Error comprobando VirusTotal: {e}"}
+    
 def check_hybrid_analysis(hash):
     url = "https://www.hybrid-analysis.com/api/v2/search/hash"
     headers = {
@@ -75,6 +74,7 @@ def check_hybrid_analysis(hash):
         "accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded"
     }
+    
     data = f"hash={hash}"
     
     try:
@@ -83,7 +83,7 @@ def check_hybrid_analysis(hash):
         result = response.json()
         
         if not result:
-            return {"error": "No related reports found"}
+            return {"error": "No encontrado en Hybrid Analysis"}
         
         report = result[0] if isinstance(result, list) else result
         
@@ -115,4 +115,4 @@ def check_hybrid_analysis(hash):
         return summary
     
     except requests.exceptions.RequestException as e:
-        return {"error": f"Error submitting to Hybrid Analysis: {e}"}
+        return {"error": f"Error al enviar a Hybrid Analysis: {e}"}
