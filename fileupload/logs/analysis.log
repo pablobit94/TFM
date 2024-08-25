@@ -10,3 +10,38 @@
 2024-08-25 17:47:39,505 - django.server - ERROR - You're accessing the development server over HTTPS, but it only supports HTTP.
 2024-08-25 17:47:39,542 - django.server - ERROR - You're accessing the development server over HTTPS, but it only supports HTTP.
 2024-08-25 17:47:39,546 - django.server - ERROR - You're accessing the development server over HTTPS, but it only supports HTTP.
+2024-08-25 18:21:43,000 - django.request - ERROR - Internal Server Error: /fileupload/
+Traceback (most recent call last):
+  File "/home/tfm/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/fileupload/views.py", line 18, in file_upload
+    filehash = FileHash.objects(hash=hash).first()
+               ^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/mongoengine/queryset/manager.py", line 38, in __get__
+    queryset = queryset_class(owner, owner._get_collection())
+                                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/mongoengine/document.py", line 231, in _get_collection
+    if cls._meta.get("auto_create_index", True) and db.client.is_primary:
+                                                    ^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/pymongo/mongo_client.py", line 1161, in is_primary
+    return self._server_property("is_writable")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/pymongo/mongo_client.py", line 931, in _server_property
+    server = self._get_topology().select_server(writable_server_selector, _Op.TEST)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/pymongo/topology.py", line 368, in select_server
+    server = self._select_server(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/pymongo/topology.py", line 346, in _select_server
+    servers = self.select_servers(
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/pymongo/topology.py", line 253, in select_servers
+    server_descriptions = self._select_servers_loop(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tfm/venv/lib/python3.12/site-packages/pymongo/topology.py", line 303, in _select_servers_loop
+    raise ServerSelectionTimeoutError(
+pymongo.errors.ServerSelectionTimeoutError: localhost:27017: [Errno 111] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 66cb7618daf2bcd56cf8ccfc, topology_type: Unknown, servers: [<ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 111] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
