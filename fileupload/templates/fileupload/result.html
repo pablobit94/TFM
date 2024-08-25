@@ -52,35 +52,20 @@
                         </table>
                     {% endif %}
                 </div>
-
                 <div class="hybrid-analysis-result">
-                    <h4>Hybrid Analysis Result:</h4>
+                    <h4>Resultado de Hybrid Analysis:</h4>
                     {% if result.hybrid_analysis_result.error %}
                         <p>{{ result.hybrid_analysis_result.error }}</p>
-                        <p>Para respetar la privacidad y anonimato, se recomienda que si es un archivo sensible a datos o si no se quiere alertar al hacker, se analice dicho archivo en un antivirus local que no suba o comparta información del hash o el reporte y resultados a una base de datos en la nube.</p>
                     {% else %}
                         <p><strong>SHA256:</strong> {{ result.hybrid_analysis_result.sha256 }}</p>
-                        <p><strong>File Name:</strong> {{ result.hybrid_analysis_result.submit_name }}</p>
-                        <p><strong>Verdict:</strong> {{ result.hybrid_analysis_result.verdict }}</p>
-                        <p><strong>Threat Level:</strong> {{ result.hybrid_analysis_result.threat_level }}</p>
-                        <p><strong>VX Family:</strong> {{ result.hybrid_analysis_result.vx_family }}</p>
-                        <p><strong>AV Detect:</strong> {{ result.hybrid_analysis_result.av_detect }}</p>
-            
-                        <h5>Malicious Indicators:</h5>
-                        <ul>
-                            {% for indicator in result.hybrid_analysis_result.malicious_indicators %}
-                                <li>{{ indicator.tactic }} - {{ indicator.technique }} ({{ indicator.attck_id }})</li>
-                            {% endfor %}
-                        </ul>
-            
-                        <h5>Suspicious Indicators:</h5>
-                        <ul>
-                            {% for indicator in result.hybrid_analysis_result.suspicious_indicators %}
-                                <li>{{ indicator.tactic }} - {{ indicator.technique }} ({{ indicator.attck_id }})</li>
-                            {% endfor %}
-                        </ul>
+                        <p><strong>Nombre del Archivo:</strong> {{ result.hybrid_analysis_result.submit_name }}</p>
+                        <center>
+                            <a id="hybrid-analysis-link" class="button-link" target="_blank" data-hash="{{ result.hash }}">
+                                Ver Análisis Completo
+                            </a>                            
+                        </center>                                      
                     {% endif %}
-                </div>
+                </div>                                                                                                                                    
             {% endfor %}
         </div>
     </main>
@@ -90,5 +75,16 @@
         </div>
     </footer>
     <script src="{% static 'fileupload/js/script.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const linkElement = document.getElementById('hybrid-analysis-link');
+            const hash = linkElement.getAttribute('data-hash');
+            if (hash) {
+                linkElement.href = `https://www.hybrid-analysis.com/sample/${hash}`;
+            } else {
+                console.error('Hash not found.');
+            }
+        });
+    </script>      
 </body>
 </html>

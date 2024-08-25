@@ -176,6 +176,20 @@ input[type="file"] {
     margin-top: auto;
 }
 
+.button-link {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #007bff;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+.button-link:hover {
+    background-color: #0056b3;
+}
+
 @media (max-width: 768px) {
     .header img {
         width: 120px;

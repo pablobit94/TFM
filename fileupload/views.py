@@ -20,7 +20,6 @@ def file_upload(request):
                 virustotal_result = check_virustotal(hash)
                 hybrid_analysis_result = check_hybrid_analysis(hash)
 
-                # Verificar que la respuesta es un diccionario
                 if not isinstance(hybrid_analysis_result, dict):
                     hybrid_analysis_result = {"error": "Invalid response format from Hybrid Analysis"}
 
@@ -87,31 +86,28 @@ def check_hybrid_analysis(hash):
         
         report = result[0] if isinstance(result, list) else result
         
+        engines = []
+        for engine_key, engine_result in report.get('scan_results', {}).get('scan_details', {}).items():
+            engines.append({
+                "name": engine_result.get("engine_name", engine_key),
+                "result": engine_result.get("threat_found", "Ninguno")
+            })
+
+        malicious_indicators = [{"technique": ind.get("technique", "Unknown"), "tactic": ind.get("tactic", "Unknown")} for ind in report.get('malicious_indicators', [])]
+        suspicious_indicators = [{"technique": ind.get("technique", "Unknown"), "tactic": ind.get("tactic", "Unknown")} for ind in report.get('suspicious_indicators', [])]
+
         summary = {
             "sha256": report.get("sha256"),
             "submit_name": report.get("submit_name"),
             "verdict": report.get("verdict", "unknown"),
             "threat_level": report.get("threat_level", "unknown"),
             "vx_family": report.get("vx_family", "unknown"),
-            "av_detect": report.get("av_detect", 0),
-            "malicious_indicators": [],
-            "suspicious_indicators": []
+            "av_detect": len([e for e in engines if e["result"] != "Ninguno"]),
+            "engines": engines,
+            "malicious_indicators": malicious_indicators,
+            "suspicious_indicators": suspicious_indicators
         }
-        
-        for mitre in report.get("mitre_attcks", []):
-            if mitre.get("malicious_identifiers_count", 0) > 0:
-                summary["malicious_indicators"].append({
-                    "technique": mitre.get("technique"),
-                    "tactic": mitre.get("tactic"),
-                    "attck_id": mitre.get("attck_id")
-                })
-            elif mitre.get("suspicious_identifiers_count", 0) > 0:
-                summary["suspicious_indicators"].append({
-                    "technique": mitre.get("technique"),
-                    "tactic": mitre.get("tactic"),
-                    "attck_id": mitre.get("attck_id")
-                })
-        
+
         return summary
     
     except requests.exceptions.RequestException as e:

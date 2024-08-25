@@ -2,6 +2,8 @@
 
 from pathlib import Path
 from mongoengine import connect
+import logging
+from logging.handlers import RotatingFileHandler
 
 # Conectar a la base de datos MongoDB
 connect(db='TFM_BBDD', host='localhost', port=27017)
@@ -116,19 +118,32 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
+        'file': {
+            'level': 'DEBUG',  # Cambia 'ERROR' a 'DEBUG'
+            'class': 'logging.FileHandler',
+            'filename': '/home/tfm/fileupload/logs/analysis.log',
+            'formatter': 'simple',
+        },
         'console': {
-            'level': 'DEBUG',
+            'level': 'DEBUG',  # Cambia 'ERROR' a 'DEBUG'
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+            'handlers': ['console', 'file'],
+            'level': 'ERROR',
         },
-        '__main__': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+        'fileupload': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',  # Asegúrate de que esté en 'DEBUG'
+            'propagate': False,
         },
     },
 }

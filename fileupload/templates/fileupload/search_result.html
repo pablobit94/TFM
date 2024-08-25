@@ -1,61 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Result</title>
+    <title>Resultados de Búsqueda</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'fileupload/css/style.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
     <header class="header">
-        <div class="container">
+        <div class="container header-container">
             <img src="{% static 'fileupload/images/logo.png' %}" alt="Logo" class="logo">
             <nav>
-                <ul>
-                    <li><a href="{% url 'file_upload' %}">Home</a></li>
-                    <li><a href="{% url 'hash_search' %}">Search Hash</a></li>
+                <ul class="menu">
+                    <li><a href="{% url 'file_upload' %}">Inicio</a></li>
+                    <li><a href="{% url 'hash_search' %}">Buscar Hash</a></li>
                 </ul>
             </nav>
         </div>
     </header>
-    <main class="main-content">
-        <div class="container">
-            <h1>Search Result</h1>
+    <main class="main-content container">
+        <div class="result">
+            <h2>Resultados de Búsqueda</h2>
             {% if results %}
-                <ul>
-                    {% for result in results %}
-                        <li>
-                            <p>Hash: {{ result.hash }}</p>
-                            <h2>VirusTotal Result:</h2>
-                            {% if result.virustotal_status.error %}
-                                <p>{{ result.virustotal_status.error }}</p>
-                            {% else %}
-                                <div class="virustotal-result">
-                                    <p>ID: {{ result.virustotal_status.id }}</p>
-                                    <p>Type: {{ result.virustotal_status.type }}</p>
-                                    <h3>Attributes:</h3>
-                                    <pre>{{ result.virustotal_status.attributes|json_script:"attributes" }}</pre>
-                                </div>
-                            {% endif %}
-                            <h2>Any.run Result:</h2>
-                            {% if result.anyrun_status.error %}
-                                <p>{{ result.anyrun_status.error }}</p>
-                            {% else %}
-                                <pre>{{ result.anyrun_status|json_script:"anyrun_result" }}</pre>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
+                {% for result in results %}
+                    <h3>Hash del Archivo: {{ result.hash }}</h3>
+                    
+                    <div class="virustotal-result">
+                        <h4>Resultado de VirusTotal:</h4>
+                        {% if result.virustotal_status.error %}
+                            <p>{{ result.virustotal_status.error }}</p>
+                            <p>Para respetar la privacidad y anonimato, se recomienda que si es un archivo sensible a datos o si no se quiere alertar al hacker, se analice dicho archivo en un antivirus local que no suba o comparta información del hash o el reporte y resultados a una base de datos en la nube.</p>
+                        {% else %}
+                            <table class="table-results">
+                                <thead>
+                                    <tr>
+                                        <th>Motor</th>
+                                        <th>Resultado</th>
+                                        <th>Categoría</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for engine, details in result.virustotal_status.items %}
+                                        <tr>
+                                            <td>{{ engine }}</td>
+                                            <td class="result-cell">{{ details.result }}</td>
+                                            <td>{{ details.category }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                    <div class="hybrid-analysis-result">
+                        <h4>Resultado de Hybrid Analysis:</h4>
+                        {% if result.hybrid_analysis_status.error %}
+                            <p>{{ result.hybrid_analysis_status.error }}</p>
+                        {% else %}
+                            <p><strong>SHA256:</strong> {{ result.hybrid_analysis_status.sha256 }}</p>
+                            <p><strong>Nombre del Archivo:</strong> {{ result.hybrid_analysis_status.submit_name }}</p>
+                            <center>
+                                <a id="hybrid-analysis-link" class="button-link" target="_blank" data-hash="{{ result.hash }}">
+                                    Ver Análisis Completo
+                                </a>                            
+                            </center>                              
+                        {% endif %}
+                    </div>  
+                {% endfor %}
             {% else %}
-                <p>No results found for the given hash.</p>
+                <p>No se encontraron resultados para el hash proporcionado.</p>
             {% endif %}
         </div>
     </main>
     <footer class="footer">
         <div class="container">
-            <p>© 2024 Your Company. All rights reserved.</p>
+            <p>© 2024 Hashware. Pablo Rodríguez García. Todos los derechos reservados.</p>
         </div>
     </footer>
+    <script src="{% static 'fileupload/js/script.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const linkElement = document.getElementById('hybrid-analysis-link');
+            const hash = linkElement.getAttribute('data-hash');
+            if (hash) {
+                linkElement.href = `https://www.hybrid-analysis.com/sample/${hash}`;
+            } else {
+                console.error('Hash not found.');
+            }
+        });
+    </script>     
 </body>
 </html>
