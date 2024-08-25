@@ -56,6 +56,7 @@
                     <h4>Resultado de Hybrid Analysis:</h4>
                     {% if result.hybrid_analysis_result.error %}
                         <p>{{ result.hybrid_analysis_result.error }}</p>
+                        <p>Para respetar la privacidad y anonimato, se recomienda que si es un archivo sensible a datos o si no se quiere alertar al hacker, se analice dicho archivo en un antivirus local que no suba o comparta información del hash o el reporte y resultados a una base de datos en la nube.</p>
                     {% else %}
                         <p><strong>SHA256:</strong> {{ result.hybrid_analysis_result.sha256 }}</p>
                         <p><strong>Nombre del Archivo:</strong> {{ result.hybrid_analysis_result.submit_name }}</p>
