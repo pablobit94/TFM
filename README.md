@@ -71,6 +71,50 @@ Este proyecto consiste en una aplicación web para subir archivos y verificar su
     ```bash
     python3 manage.py runserver 0.0.0.0:8000
     ```
+    
+3. Si se instala sin SSL:
+    Se debe modificar el archivo settings.py y poner en False la redirección SSL.
+
+## Si se instala en producción con SSL
+
+1. Instalar requerimientos
+    ```bash
+    sudo apt install certbot python3-certbot nginx
+    ```
+
+2. Configurar nginx
+    Modificar /etc/nginx/sites-available/default y remplazar todo
+    ```server {
+    listen 80;
+    server_name tfm.pablorg.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static/ {
+        alias /home/tfm/fileupload/static/;
+    }
+}
+    ```
+
+2. Instalar certificado
+    Primero cambiar DNS y que apunte un dominio o subdominio a la IP Pública de tu servidor, luego ejecutar el comando
+    ```sudo certbot --nginx -d dominio.com
+    ```
+
+    Luego reiniciar nginx con ```sudo service nginx reload```
+
+3. Ejecutar app
+    Ejecutando el entorno virtual, instalar gunicorn
+    ```pip install gunicorn
+    ```
+    Luego ir a la ruta de la app y ejecutar
+    ```gunicorn --bind 127.0.0.1:8000 tfm.wsgi:application```
 
 ## Licencia
 
